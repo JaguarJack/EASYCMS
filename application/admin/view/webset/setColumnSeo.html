@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>网站信息设置</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+  <script src="/public/static/layer/layer.js"></script>
+</head>
+<style>
+	.tab-content{margin-top:10px;}
+	.form-horizontal{margin:20px auto;width:1100px;}
+	.btn-block{width:40%;font-size:20px;}
+</style>
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>网站配置</small></div>
+    </div>
+    <div class="tab-content"><div class="alert alert-success">在这里，您可以设置栏目的seo信息</div></div>
+    
+	<ul id="myTab" class="nav nav-tabs">
+	   <li class="active"><a href="#info" data-toggle="tab">设置栏目</a></li>
+	</ul>
+	   
+	   <!-- seo信息 -->
+	   <div>
+		<form class="form-horizontal" role="form">
+		 <div class="form-group">
+		      <label for="firstname" class="col-sm-2 control-label">首页标题</label>
+		      <div class="col-sm-6">
+		      <select class="form-control" id="fid" name="fid">
+		          <div class="col-sm-8">
+		         <foreach name="column" item="vo">
+		         	<option value="{$vo.id}"><?php echo str_repeat('—',$vo['level'])?>{$vo.name}</option>
+		         </foreach>
+		      </select>
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="firstname" class="col-sm-2 control-label">首页标题</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="title" placeholder="请输入首页标题" value="{:get_base_config_info('title')}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">首页关键词</label>
+		      <div class="col-sm-6">
+		         <textarea class="form-control" rows="3" id="keywords" placeholder="请输入关键词,之间用,隔开">{:get_base_config_info('keywords')}</textarea>
+		      </div>
+		   </div>
+			 <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">首页描述</label>
+		      <div class="col-sm-6">
+		         <textarea class="form-control" rows="4" id="description" placeholder="请输入首页描述">{:get_base_config_info('description')}</textarea>
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <div class="col-sm-offset-2 col-sm-10">
+		        <button type="button" class="btn btn-primary btn-lg btn-block seo"> 提交</button>
+		      </div>
+		   </div>
+		</form>
+	   </div>
+	</div>
+</div>
+</body>
+</html>
+<script>
+function getColumnSeo(cid)
+{
+	var url = "{:url('Webset/getColumnSeo')}";
+	$.post(url,{cid:cid},function(data){
+		$('#title').val(data.data.title);
+		$('#keywords').val(data.data.keywords);
+		$('#description').val(data.data.description);
+	});
+}
+$(function(){
+	var cid = $('#fid').val();
+	getColumnSeo(cid);
+})
+
+$('#fid').change(function(){
+	var cid = $(this).val();
+	getColumnSeo(cid);
+})
+
+	//提交seo信息
+	$('.seo').click(function(){
+		var cid      = $('#fid').val();
+		var title 	 = $('#title').val();
+		var keywords = $('#keywords').val();
+		var description  = $('#description').val();
+		var url = "{:url('Webset/setColumnSeo')}";     
+		$.post(url,{cid:cid,title:title,keywords:keywords,description:description},function(data){
+			if(data.code == '10004'){
+       		 	 layer.tips(data.msg, "#"+data.data.name);
+	       	 }else if(data.code == '10000'){
+	       		 layer.msg(data.msg);
+	       	 }else{
+	       		 layer.msg(data.msg);
+	       	 }
+		})
+	})
+</script>

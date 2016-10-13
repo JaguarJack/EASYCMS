@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+</head>
+
+<body>
+<div class="admin-content">
+    <div class="am-g">
+     <div class="am-u-sm-12">
+        <table class="am-table am-table-bd am-table-striped admin-content-table">
+          <thead>
+          
+          <tr>
+            <th> 页码</th>
+            <th>编辑</th>
+          </tr>
+          </thead>
+          <tbody>
+		<foreach name="content_id" item="vo" key="k">
+          <tr>
+          <td>第{$k+1}页</td>
+            <td>
+	            <a class="am-btn am-btn-success am-btn-xs" href="{:url('article/editContent',['id'=>$vo])}">
+	            <span class="am-icon-edit"></span>&nbsp;编辑
+	            </a>
+        	</td>
+          </tr>
+          </foreach>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

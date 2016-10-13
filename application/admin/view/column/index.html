@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台菜单列表</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+  <script src="/public/static/js/bootstrap.min.js"></script>
+  <script src="/public/static/layer/layer.js"></script>
+</head>
+
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>后台菜单列表</small></div>
+    </div>
+	<div class="tab-content">
+            <div class="alert alert-success">在这里，您可以添加、编辑和删除后台菜单</div>
+     </div>
+     <form class="well form-search">
+            <a id="addmenu" class="btn btn-primary offsetright"  data-toggle="modal" data-target="#myModal" href="javascript:;">添加顶级栏目</a>             
+     </form>
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <table class="am-table am-table-bd am-table-striped admin-content-table">
+          <thead>
+          <tr>
+            <th>ID</th><th>栏目名称</th><th>显示状态</th><th>管理</th>
+          </tr>
+          </thead>
+          <tbody>
+       
+          <foreach name="column" item='vo'>
+          <tr>
+          <td>{$vo.id}</td>
+          <td><?php echo str_repeat('——',$vo['level'])?>|{$vo.name}</td>
+          <td>
+          	<if condition="$vo['show'] eq 1">
+          		<a class="_show am-btn am-btn-warning am-btn-xs" data="{$vo.id}" href="javascript:;">是</a>
+          	<else/>
+          		<a class="_show am-btn am-btn-default am-btn-xs" data="{$vo.id}" href="javascript:;">否</a>
+          	</if>
+          </td> 
+            <td width="30%">
+            <a class="_add am-btn am-btn-primary am-btn-xs" data-toggle="modal" data="{$vo.id}"data-target="#myModal" href="javascript:;"><span class="am-icon-plus-square-o"></span>&nbsp;添加子菜单</a>
+            <a class="_edit am-btn am-btn-success am-btn-xs" data-toggle="modal" data="{$vo.id}"data-target="#myModal" href="javascript:;"><span class="am-icon-edit"></span>&nbsp;编辑</a>
+            <a class="_del am-btn am-btn-danger am-btn-xs" data="{$vo.id}" href="javascript:;"><span class="am-icon-trash"></span>&nbsp;删除</a>
+            </td>
+          </tr>
+     </foreach>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="m">
+    	
+    </div>
+  </div>
+  <!-- content end --> 
+</body>
+
+<div class="modal fade" id="myModal" role="dialog" aria-hidden="true"></div>
+</html>
+<script>
+$().ready(function(){
+	//添加顶级栏目
+	$('#addmenu').click(function(){
+		var url = '{:url("Column/addColumn")}';
+		$.get(url,function(data){
+			if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+			}else{
+				$('#myModal').html(data);
+			}	
+		})
+	})
+	//添加子栏目
+	$('._add').click(function(){
+		var id = $(this).attr('data');
+		var url = '{:url("Column/addSonColumn")}';
+		$.get(url,{id:id},function(data){
+			if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+				
+			}else{
+				$('#myModal').html(data);
+			}	
+		})
+	})
+	//编辑栏目
+	$('._edit').click(function(){
+		var id = $(this).attr('data');
+		$.get('{:url("Column/editColumn")}',{id:id},function(data){
+			if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+			}else{
+				$('#myModal').html(data);
+			}
+			
+		})
+	})
+	//改变显示状态
+	$('._show').click(function(){
+		var _this = $(this);
+		var id = _this.attr('data');
+		$.post('{:url("Column/changeStatus")}',{id:id},function(data){
+			if(data.code == '10003'){
+				layer.msg(data.msg);
+			}else if(data.data.show == 1){
+				 _this.removeClass('am-btn-default').addClass('am-btn-warning').html("是");
+			}else if(data.data.show == 2){
+				_this.addClass('am-btn-default').removeClass('am-btn-warning').html("否");
+			}
+			
+		})
+	})
+	//删除栏目
+	$('._del').click(function(){
+		var _this = $(this);
+		var id = _this.attr('data');
+		layer.confirm('确定删除该栏目吗?', {
+			  icon: 3,
+			  skin: 'layer-ext-moon',
+			  btn: ['确认','取消'] //按钮
+			}, function(){
+				$.post('{:url("Column/delColumn")}',{id:id},function(data){
+					if(data.code == '10000'){
+						layer.msg(data.msg);
+						_this.parent('td').parent('tr').remove();
+					}else if(data.code == '10003'){
+						layer.msg(data.msg);
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+		  });
+	})
+});
+	
+</script>

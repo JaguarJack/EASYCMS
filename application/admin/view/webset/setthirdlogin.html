@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>网站信息设置</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+   <script src="/public/static/js/bootstrap.min.js"/></script>
+
+  <script src="/public/static/layer/layer.js"></script>
+</head>
+<style>
+	.tab-content{margin-top:10px;}
+	.form-horizontal{margin:auto;width:1100px;}
+	.btn-block{width:40%;font-size:20px;}
+</style>
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>第三方配置</small></div>
+    </div>
+	<ul id="myTab" class="nav nav-tabs">
+	   <li class="active"><a href="#info" data-toggle="tab">QQ登录</a></li>
+	   <li><a href="#link" data-toggle="tab">微博登录</a></li>
+	</ul>
+	<!-- qq登录 -->
+	<div id="myTabContent" class="tab-content">
+	   <div class="tab-pane fade in active" id="info">
+	   <div class="tab-content"><div class="alert alert-success">在这里，您可以QQ登录的基本信息</div></div>
+	     <form class="form-horizontal" role="form">
+		   <div class="form-group">
+		      <label for="firstname" class="col-sm-2 control-label">APP_KEY</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="qq_key" placeholder="请输入QQ的APP_KEY" value="{$qqinfo['key']}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">APP_SECRECT</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="qq_secrect" placeholder="请输入QQ的APP_SECRECT" value="{$qqinfo['serect']}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">开启</label>
+		     <label class="checkbox-inline">
+      			<input type="radio"  class="status" name="status" value="1" <if condition="$qqinfo['status'] eq 1">checked</if>> 开启
+   			 </label>
+		     <label class="checkbox-inline">
+		        <input type="radio"  class="status" name="status" value="2" <if condition="$qqinfo['status'] eq 2">checked</if>> 关闭
+		     </label>   
+		   </div>
+		   <div class="form-group">
+		      <div class="col-sm-offset-2 col-sm-10">
+		        <button type="button" class="btn btn-primary btn-lg btn-block qqsub"> 保存</button>
+		      </div>
+		   </div>
+		</form>
+	   </div>
+	   
+	   <!-- qq登录-->
+	   <div class="tab-pane fade" id="link">
+	   	   <div class="tab-content"><div class="alert alert-success">在这里，您可以微博登录的信息</div></div>
+	   	<form class="form-horizontal" role="form">
+		   
+		   <div class="form-group">
+		      <label for="firstname" class="col-sm-2 control-label">APP_KEY</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="sina_key" placeholder="请输入微博的APP_KEY" value="{$sinainfo['key']}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">APP_SECRECT</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="sina_secrect" placeholder="请输入微博的APP_SECRECT" value="{$sinainfo['serect']}">
+		      </div>
+		   </div>
+			<div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">开启</label>
+		      <label class="checkbox-inline">
+      			<input type="radio"  class="status"name="sinastatus" value="1" <if condition="$sinainfo['status'] eq 1">checked</if>> 开启
+   			 </label>
+		     <label class="checkbox-inline">
+		        <input type="radio"  class="status" name="sinastatus" value="2" <if condition="$sinainfo['status'] eq 2">checked</if>>关闭
+		     </label>   
+		   </div>
+		   <div class="form-group">
+		      <div class="col-sm-offset-2 col-sm-10">
+		        <button type="button" class="btn btn-primary btn-lg btn-block sinasub"> 保存</button>
+		      </div>
+		   </div>
+		</form>
+	   </div>
+	</div>
+</div>
+</body>
+</html>
+<script>
+var url = "{:url('webset/setthirdlogin')}";
+	//提交qq信息
+	$('.qqsub').click(function(){
+		var key = $('#qq_key').val();
+		var serect = $('#qq_secrect').val();
+		var status = $('input[name=status]:checked').val();
+		$.post(url,{key:key,serect:serect,status:status,type:1},function(data){
+				layer.msg(data.msg);
+		})
+	})
+	//提交sina信息
+	$('.sinasub').click(function(){
+		var key = $('#sina_key').val();
+		var serect = $('#sina_secrect').val();
+		var status = $('input[name=sinastatus]:checked').val();
+		$.post(url,{key:key,serect:serect,status:status,type:0},function(data){
+				layer.msg(data.msg);
+		})
+
+	})
+</script>

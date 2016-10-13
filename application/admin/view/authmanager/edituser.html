@@ -1,0 +1,58 @@
+<div class="modal-dialog">
+ <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">编辑后台成员</h4>
+         </div>
+         <form class="form-horizontal" action="{:url('Authmanager/edituser')}"  method="post" role="form" style="margin-top:10px;">
+		   
+		  <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>用户名:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="name" name="name" type="text" value="{$userinfo.name}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>密码:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="pwd" name="password" type="password" placeholder="该输入密码,数字字母_组合，长度5到20字符">
+		      </div>
+		    <input name="id" type="hidden" value="{$id}">
+		      
+		   </div>         
+   			 <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary sub">编辑用户</button>
+         </div>
+    </div>
+</div>
+<style>
+.red{color:red;}
+</style>
+<script src="/public/static/layer/layer.js"></script>
+<script type="text/javascript">
+$(".sub").click(function(){
+	var name = $('#name').val();
+	var pwd  = $('#pwd').val();
+	preg_name = /^[A-Za-z0-9]{1,10}$/;
+	preg_pwd = /^[A-Za-z0-9\_]{5,20}$/;
+	if(!preg_name.test(name)){
+		layer.tips('请输入菜单名称或是名称过长', '#name');
+		return;
+	}
+	
+	if(pwd && !preg_pwd.test(pwd)){
+		layer.tips('密码不符合规则', '#pwd');
+		return;
+	}
+	$.post("{:url('Authmanager/isExistName')}",{name:name},function(data){
+		if(data.code == '10001'){
+			layer.tips('该用户名已经存在', '#name');
+			return;
+		}else{
+			$('.form-horizontal').submit();
+		}
+	})
+	
+})
+
+</script>
