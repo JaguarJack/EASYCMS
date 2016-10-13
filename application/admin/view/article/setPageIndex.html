@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台组别列表</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+ <script src="/public/static/layer/layer.js"></script>
+</head>
+
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">前台管理</strong>/<small>页面设置</small></div>
+    </div>
+	<div class="tab-content">
+            <div class="alert alert-success">在这里，您可以添加、编辑和删除单页面</div>
+     </div>
+     <form class="well form-search"> 
+     	<a class="btn btn-primary" href="{:url('Article/addPage')}">添加页面</a>             
+     </form>
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <table class="am-table am-table-bd am-table-striped admin-content-table">
+          <thead>
+          <tr>
+            <th>ID</th><th widht="50%">页面名称</th><th>页面状态</th><th>管理</th>
+          </tr>
+          </thead>
+          <tbody>
+          <foreach name="page" item='vo'>
+          <tr>
+          	<td>{$vo.id}</td>
+          	<td width="35%">{$vo.name}</td>
+          	<td>
+          		<if condition="$vo['c_status'] eq 0">
+                 <a class="del am-btn am-btn-default am-btn-xs" data="{$vo['cid']}" href="javascript:;" >关闭</a> 
+                 <else/>
+                 <a class="del am-btn am-btn-danger am-btn-xs" data="{$vo['cid']}" href="javascript:;" >开启</a>
+                 </if>
+          	</td>
+            <td>
+                 <a class="edit am-btn am-btn-success am-btn-xs"href="{:url('Article/editPage',array('id'=>$vo['id']))}"><span class="am-icon-edit"></span>&nbsp;编辑</a>
+            </td>
+          </tr> 
+          </foreach>       
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+<script>
+$('.del').click(function(){
+	var _this = $(this);
+	var id = _this.attr('data');
+	var url = "{:url('Article/closePage')}";
+	$.post(url,{id:id},function(data){
+		if(data.data.status == 1){
+			_this.html('开启').removeClass('am-btn-default').addClass('am-btn-danger');
+		}else if(data.data.status == 0){
+			_this.html('关闭').removeClass('am-btn-danger').addClass('am-btn-default');;
+		}else if(data.code == '10003'){
+			layer.msg(data.msg);
+		}
+	})
+})
+	
+</script>

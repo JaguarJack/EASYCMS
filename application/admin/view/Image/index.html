@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台菜单列表</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+  <script src="/public/static/layer/layer.js"></script>
+</head>
+
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>图片管理</small></div>
+    </div>
+	<div class="tab-content">
+            <div class="alert alert-success">在这里，您可以添加、删除 图片</div>
+     </div>
+     <form class="well form-search">
+            <a href="{:url('Image/addImage')}" class="btn btn-primary">图片上传</a> 
+            <span class="btn btn-primary del_all" style="float:right;">批量删除</span>            
+     </form>
+	  <div class="am-g">
+     <div class="am-u-sm-12">
+        <table class="am-table am-table-bd am-table-striped admin-content-table">
+          <thead>
+          
+          <tr>
+           <th><input type='checkbox' name="all"></th>
+            <th>ID</th>
+            <th>所属栏目</th>
+            <th>缩略图</th>
+            <th>添加时间</th>
+            <th>管理</th>
+          </tr>
+          </thead>
+          <tbody>
+		<foreach name="list" item="vo">
+          <tr>
+          <td><input type='checkbox' name="every" value="{$vo.id}"></td>
+          <td>{$vo.id}</td>
+          <td>{$vo.cname}</td>
+          <td id="layer-photos-demo" class="layer-photos-demo">
+          <img src="{$vo.path}/{$vo.file_name}" style="width:50px;" layer-src="{$vo.path}/{$vo.file_name}"></td>
+          <td>{$vo.add_time|date="Y-m-d",###}</td>   
+            <td>
+            <a class="am-btn am-btn-success am-btn-xs"  href="{:url('Article/editArticle',array('id'=>$vo['id']))}"><span class="am-icon-edit"></span>&nbsp;编辑</a>
+            <a class="del am-btn am-btn-danger am-btn-xs"  data="{$vo.id}" href="javascript:;"><span class="am-icon-trash"></span>&nbsp;删除</a>
+            </td>
+          </tr>
+          </foreach>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>{$list->render()}</div>
+  </div>
+  <!-- content end --> 
+</body>
+
+</html>
+<script>
+	layer.ready(function(){ //为了layer.ext.js加载完毕再执行
+	  layer.photos({
+	    photos: '.layer-photos-demo'
+	  });
+	});
+	var url = "{:url('Image/delImage')}";
+	$('input[name=all]').click(function(){
+		var check = $(this).prop('checked');
+		if(check == true){
+			$('input[name=every]').prop('checked',true);
+		}else{
+			$('input[name=every]').prop('checked',false);
+		}
+	})
+	$('.del').click(function(){
+		var _this = $(this);
+		var id = _this.attr('data');
+		
+		$.post(url,{id:id},function(data){
+			if(data.code == '10000'){
+				_this.parent('td').parent('tr').remove();
+			}else{
+				layer.msg(data.msg);
+			}
+		})
+	})
+	
+	$('.del_all').click(function(){
+		var str = '';
+		$('input[name=every]:checked').each(function(i){
+			str += $(this).val()+",";
+		})
+		if(str.lenght < 1){
+			layer.msg("请先选择需要删除的图片");
+			return false;
+		}
+
+		$.post(url,{id:str},function(data){
+			if(data.code == '10000'){
+				layer.alert(data.msg, {
+					  icon: 1,
+					  skin: 'layer-ext-moon',
+					  closeBtn: 0
+					}, function(){self.location.reload();});
+			}else{
+				layer.msg(data.msg);
+			}
+		})
+		
+	})
+</script>

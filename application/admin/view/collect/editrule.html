@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>编辑采集规则</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+  <script src="/public/static/layer/layer.js"></script>
+</head>
+<style>
+	.tab-content{margin-top:10px;}
+	.form-horizontal{margin:auto;width:1100px;}
+	.btn-block{width:40%;font-size:20px;}
+	span{color:red;}
+</style>
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>编辑采集规则</small></div>
+    </div>
+	<div id="myTabContent" class="tab-content">
+	   <div class="tab-pane fade in active" id="info">
+	   <div class="tab-content"><div class="alert alert-success">在这里，您可以编辑网站采集规则</div></div>
+	     <form class="form-horizontal" role="form">
+		   <div class="form-group">
+		      <label for="firstname" class="col-sm-2 control-label"><span>*</span>站点名称</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="site" placeholder="请输入站点名称" value="{$rule['site']}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label"><span>*</span>站点网址</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="site_url" placeholder="请输入站点网址,http://开头" value="{$rule['site_url']}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">单页/分类</label>
+		      <div class="col-sm-6">
+		         <input type="radio" name="is_page" value="1" class="is_page" <if condition="$rule['is_page'] eq 1">checked</if>>单页
+		         <input type="radio" name="is_page" value="2" class="is_page" <if condition="$rule['is_page'] eq 2">checked</if>>分类
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label title"><span>*</span>单页标题规则</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="title_rule" name="title_rule" placeholder="请输入标题规则" value="{$rule['title_rule']|htmlspecialchars=###}">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label content"><span>*</span>单页内容规则</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="content_rule" name="content_rule" placeholder="请输入内容规则" value="{$rule['content_rule']|htmlspecialchars=###}">
+		      </div>
+		   </div>
+		  
+		   <div class="form-group page_link" style="display:none;">
+		      <label for="lastname" class="col-sm-2 control-label"><span>*</span>分页链接</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="page_url" placeholder="分页链接" value="{$rule['page_url']}">
+		      </div>
+		   </div>
+		   <div class="form-group page_link" style="display:none;">
+		      <label for="lastname" class="col-sm-2 control-label">采集分页数</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="page_num" placeholder="从当前页开始往后N页，如果没有输入默认采集当前页" value="{$rule['page_num']}">
+		      </div>
+		   </div>
+		    <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">采集内容是否分页</label>
+		      <div class="col-sm-6">
+		          <input type="radio" name="is_paginate" value="1" <if condition="$rule['is_paginate'] eq 1">checked</if>>内容不分页
+		          <input type="radio" name="is_paginate" value="2" <if condition="$rule['is_paginate'] eq 2">checked</if>>内容分页
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label">内容分页规则</label>
+		      <div class="col-sm-6">
+		         <input type="text" class="form-control" id="content_url" name="content_url" placeholder="请输入内容分页url" value="{$rule['content_url']|htmlspecialchars=###}">
+		      </div>
+		   </div>
+		  	<div class="col-sm-offset-2 col-sm-10">
+		        <button type="button" class="btn btn-primary btn-lg btn-block info">提交</button>
+		    </div>
+		</form>
+	   </div>
+	</div>
+</div>
+</body>
+</html>
+<script>
+$(function(){
+	var is_page = $('input[name=is_page]:checked').val();
+	if(is_page == 2){
+		$('.page_link').css('display','block');
+		$('.title').html("<span>*</span>分类标题规则");
+		$('.content').html("<span>*</span>分类内容规则");
+	}
+})
+	$('.is_page').click(function(){
+		var is_page = $(this).val();
+		if(is_page == 2){
+			$('.page_link').css('display','block');
+			$('.title').html("<span>*</span>分类标题规则");
+			$('.content').html("<span>*</span>分类内容规则");
+		}else{
+			$('.page_link').css('display','none');
+			$('.title').html("<span>*</span>单页标题规则");
+			$('.content').html("<span>*</span>单页内容规则");
+		}
+	})
+	
+	$('.info').click(function(){
+		var site = $('#site').val();
+		var site_url = $('#site_url').val();
+		var title_rule = $('#title_rule').val();
+		var content_rule = $('#content_rule').val();
+		var content_url = $('#content_url').val();
+		var page_url = $('#page_url').val();
+		var page_num = $('#page_num').val();
+		var is_page = $('input[name=is_page]:checked').val();
+		var is_paginate = $('input[name=is_paginate]:checked').val();
+		var url = "{:url('Collect/editRule')}";
+		var id = "{$id}";
+		$.post(url,{
+			id : id,
+			site:site,
+			site_url:site_url,
+			title_rule:title_rule,
+			content_rule:content_rule,
+			page_url:page_url,
+			content_url:content_url,
+			page_num:page_num,
+			is_page:is_page,
+			is_paginate:is_paginate,
+		},function(data){
+			if(data.code == '10004'){
+      		 	 layer.tips(data.msg, "#"+data.data.name);
+	       	 }else if(data.code == '10000'){
+	       		layer.alert(data.msg, {
+					  icon: 1,
+					  skin: 'layer-ext-moon',
+					  closeBtn: 0
+					}, function(){window.location.href="{:url('Collect/index')}"});
+	       	 }else{
+	       		 layer.msg(data.msg);
+	       	 }
+		})
+	})
+</script>

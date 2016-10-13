@@ -1,0 +1,69 @@
+<div class="modal-dialog">
+ <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">添加友情链接</h4>
+         </div>
+         <form class="form-horizontal" action="{:url('Friendlylink/addlink')}"  method="post" role="form" style="margin-top:10px;">
+		  <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>链接名称:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="name" name="link_name" type="text" placeholder="该输入链接名称,长度不超过十个字符">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>链接地址:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="link" name="link" type="text" placeholder="请输入友情链接,以http://开头">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label">显示:</label>
+		      <div class="col-sm-8">
+		         <input type="radio" name="show" id="show" value="1" checked>是
+		         <input type="radio" name="show" id="show" value="2"> 否
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label">检测:</label>
+		      <div class="col-sm-8">
+		         <input type="radio" name="is_check" id="check" value="1" checked>是
+		         <input type="radio" name="is_check" id="check" value="2"> 否
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label">链接排序:</label>
+		      <div class="col-sm-4">
+		         <input class="form-control" id="sort" name="sort" type="text" placeholder="该输入排序" value="0">
+		      </div>
+		   </div>               
+   			 <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary sub">添加链接</button>
+         </div>
+    </div>
+</div>
+<style>
+.red{color:red;}
+</style>
+<script src="/public/static/layer/layer.js"></script>
+<script type="text/javascript">
+$(".sub").click(function(){
+	var name = $('#name').val();
+	var link = $('#link').val();
+	var sort = $('#sort').val();
+
+	preg_sort = /^[0-9]{1,5}$/;
+	if(!name || name.length > 10){
+		layer.tips('请输入菜单名称或是名称过长', '#name');
+		return;
+	}
+	
+	if(!preg_sort.test(sort)){
+		layer.tips('必须填写数字且最大不超过五位数', '#sort');
+		return;
+	}
+	
+	$('.form-horizontal').submit();
+})
+
+</script>

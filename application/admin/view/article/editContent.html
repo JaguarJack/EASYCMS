@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台菜单列表</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/ueditor/ueditor.config.js"></script>
+  <script src="/public/ueditor/ueditor.all.min.js"> </script>
+  <style>
+	#edui1{margin:auto;}
+	.red{color:red;}
+</style>
+</head>
+
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>编辑分页文章</small></div>
+    </div>
+	<div class="tab-content">
+            <div class="alert alert-success">在这里，您可以编辑分页文章内容</div>
+     </div>
+    <div class="am-g">
+    	   <form action="{:url('article/editContent')}" method="post" role="form" style="margin-top:10px;">
+
+		   <div class="form-group">
+		      <label for="lastname" class="col-sm-2 control-label"><span class="red">*</span>文章内容</label>
+		      <div class="am-form-group am-form-file">
+				 <textarea id="container" name="content" type="text/plain" style="margin:auto;">
+					{$content.content|html_entity_decode=###}
+				</textarea>
+			  </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label"></label>
+		      <div class="col-sm-4">
+		        <button class="btn btn-primary btn-lg btn-block">保&nbsp;&nbsp;存</button>
+		      </div>
+		   </div>
+		   <input name="id" type="hidden" value="{$content['id']}">
+		   </form>
+    </div>
+  </div>
+  <!-- content end --> 
+</body>
+
+</html>
+<script>
+var ue = UE.getEditor('container', {
+    autoHeight: false,
+    initialFrameWidth : 1080,
+    initialFrameHeight: 400,
+    maximumWords:10000000,
+});
+</script>

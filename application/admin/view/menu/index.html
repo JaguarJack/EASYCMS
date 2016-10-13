@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>前台菜单列表</title>
+  <link rel="stylesheet" href="/public/static/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="/public/static/css/bootstrap.min.css"/>
+  <script src="/public/static/js/jquery.min.js"></script>
+ <script src="/public/static/js/bootstrap.min.js"></script>
+ <script src="/public/static/js/amazeui.min.js"></script>
+ <script src="/public/static/layer/layer.js"></script>
+</head>
+
+<body>
+<div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">基本管理</strong>/<small>前台菜单列表</small></div>
+    </div>
+	<div class="tab-content">
+            <div class="alert alert-success">在这里，您可以添加、编辑和删除前台菜单</div>
+     </div>
+     <form class="well form-search">
+            <a id="addmenu" class="btn btn-primary offsetright"  data-toggle="modal" data-target="#myModal" href="javascript:;">添加菜单</a>             
+     </form>
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <table class="am-table am-table-bd am-table-striped admin-content-table">
+          <thead>
+          <tr>
+            <th>ID</th><th>菜单名称</th><th>菜单链接</th><th>功能状态</th><th>管理</th>
+          </tr>
+          </thead>
+          <tbody>
+          <foreach name="column" item='vo'>
+          <tr>
+          <td>{$vo.id}</td>
+          <td><?php echo str_repeat('——|',$vo['level'])?>{$vo.menu_name}</td>
+          <td>{$vo.menu_link}</td>
+          <td>
+          	<if condition="$vo['on'] eq 1">
+          		<a class="_on am-btn am-btn-warning am-btn-xs" data="{$vo.id}" href="javascript:;">开启</a>
+          	<else/>
+          		<a class="_on am-btn am-btn-default am-btn-xs" data="{$vo.id}" href="javascript:;">关闭</a>
+          	</if>
+          </td> 
+            <td>
+            <a class="_edit am-btn am-btn-success am-btn-xs" data-toggle="modal" data="{$vo.id}"data-target="#myModal" href="javascript:;"><span class="am-icon-edit"></span>&nbsp;编辑</a>
+            <a class="_del am-btn am-btn-danger am-btn-xs" data="{$vo.id}" href="javascript:;"><span class="am-icon-trash"></span>&nbsp;删除</a>
+            </td>
+          </tr>
+          </foreach>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="m">
+    	
+    </div>
+  </div>
+  <!-- content end --> 
+</body>
+
+<div class="modal fade" id="myModal" role="dialog" aria-hidden="true"></div>
+</html>
+<script>
+$().ready(function(){
+	$('#addmenu').click(function(){
+		var url = '{:url("Menu/addmenu")}';
+		$.get(url,function(data){
+			if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+			}else{
+				$('#myModal').html(data);
+			}	
+		})
+	})
+	
+	$('._edit').click(function(){
+		var id = $(this).attr('data');
+		$.get('{:url("Menu/editmenu")}',{id:id},function(data){
+			if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+			}else{
+				$('#myModal').html(data);
+			}
+			
+		})
+	})
+	
+	//改变功能状态
+	$('._on').click(function(){
+		var _this = $(this);
+		var id = _this.attr('data');
+		$.post('{:url("Menu/changeStatus")}',{id:id},function(data){
+			if(data.code == '10003'){
+				layer.msg(data.msg);
+			}else if(data.data.show == 1){
+				 _this.removeClass('am-btn-default').addClass('am-btn-warning').html("开启");
+			}else if(data.data.show == 2){
+				_this.addClass('am-btn-default').removeClass('am-btn-warning').html("关闭");
+			}
+			
+		})
+	})
+	
+	$('._del').click(function(){
+		var _this = $(this);
+		var id = _this.attr('data');
+		$.post('{:url("Menu/delmenu")}',{id:id},function(data){
+			if(data.code == '10000'){
+				_this.parent('td').parent('tr').remove();
+			}else if(data.code == '10003'){
+				$(".modal-backdrop").remove();
+				layer.msg(data.msg);
+				return;
+			}else{
+				layer.msg(data.msg);
+			}
+		})
+	})
+});
+	
+</script>

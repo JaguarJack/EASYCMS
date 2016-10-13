@@ -1,0 +1,46 @@
+<div class="modal-dialog">
+ <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">添加组别</h4>
+         </div>
+         <form class="form-horizontal" action="{:url('Authmanager/addgroup')}"  method="post" role="form" style="margin-top:10px;">
+		   
+		  <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>组别名称:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="name" name="title" type="text" placeholder="该输入管理组">
+		      </div>
+		   </div>
+		   <div class="form-group">
+		      <label class="col-sm-2 control-label"><span class="red">*</span>排序:</label>
+		      <div class="col-sm-8">
+		         <input class="form-control" id="sort" name="sort" type="text" placeholder="排序数越大越靠前">
+		      </div>
+		   </div>       
+   			 <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary sub">添加组别</button>
+         </div>
+    </div>
+</div>
+<style>
+.red{color:red;}
+</style>
+<script src="/public/static/layer/layer.js"></script>
+<script type="text/javascript">
+$(".sub").click(function(){
+	var name = $('#name').val();
+	var sort = $('#sort').val();
+	var preg_sort = /[0-9]{1,5}/;
+	if(!name || name.length > 10){
+		layer.tips('管理组名称太长或是未填写', '#name');
+		return;
+	}
+	if(!preg_sort.test(sort)){
+		layer.tips('排序只能填写数字，不能超过5位数', '#sort');
+		return;
+	}
+	$('.form-horizontal').submit();	
+})
+
+</script>
